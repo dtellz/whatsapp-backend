@@ -3,9 +3,6 @@ import express from 'express';
 import mongoose from 'mongoose';
 import Messages from './dbMessages.js'
 import Pusher from 'pusher';
-//admin//kogRub-qemdex-5qamqo
-
-
 
 //app config
 const app = express();
