@@ -3,14 +3,17 @@ import express from 'express';
 import mongoose from 'mongoose';
 import Messages from './dbMessages.js'
 import Pusher from 'pusher';
+import cors from 'cors';
+import { key } from './secrets.js'
+import { secret } from './secrets.js';
 
 //app config
 const app = express();
 const port = process.env.PORT || 9000;
 const pusher = new Pusher({
     appId: "1310385",
-    key: "e852742b31c6258cf038",
-    secret: "2d963f490a7ef8523ad4",
+    key: key,
+    secret: secret,
     cluster: "eu",
     useTLS: true
 });
@@ -29,7 +32,9 @@ db.once('open', () => {
             const messageDetails = change.fullDocument;
             pusher.trigger('messages', 'inserted', {
                 name: messageDetails.name,
-                message: messageDetails.message
+                message: messageDetails.message,
+                timestamp: messageDetails.timestamp,
+                received: messageDetails.received
             });
 
         } else {
@@ -39,6 +44,7 @@ db.once('open', () => {
 })
 //middlewares
 app.use(express.json())
+app.use(cors());
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Headers', '*');
